@@ -24,27 +24,35 @@ func main() {
 }
 
 func getUserInput() []float64 {
-	var numbers []float64
+	for {
+		var numbers []float64
 
-	fmt.Println("Введите числа через запятую: ")
-	scanner := bufio.NewScanner(os.Stdin)
-	scanner.Scan()
-	input := scanner.Text()
+		fmt.Println("Введите числа через запятую: ")
+		scanner := bufio.NewScanner(os.Stdin)
+		scanner.Scan()
+		input := scanner.Text()
 
-	input = strings.TrimSpace(input)
-	parts := strings.Split(input, ",")
+		input = strings.TrimSpace(input)
+		parts := strings.Split(input, ",")
 
-	for _, part := range parts {
-		part = strings.TrimSpace(part)
-		num, err := strconv.ParseFloat(part, 64)
-		if err != nil {
-			fmt.Println("Ошибка в одном из числе")
+		for _, part := range parts {
+			part = strings.TrimSpace(part)
+			num, err := strconv.ParseFloat(part, 64)
+			if err != nil {
+				fmt.Printf("Ошибка при парсинге '%s': %v\n", part, err)
+				continue
+			}
+			numbers = append(numbers, num)
+
+		}
+
+		if len(numbers) == 0 {
+			fmt.Println("Вы не ввели ни одного корректного числа. Попробуйте ещё раз.")
 			continue
 		}
-		numbers = append(numbers, num)
 
+		return numbers
 	}
-	return numbers
 }
 
 func getOperationInput() string {
