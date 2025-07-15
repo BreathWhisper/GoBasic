@@ -6,9 +6,20 @@ import (
 	"strings"
 )
 
-const USDRUB = 78.2117
-const USDEUR = 0.8533
-const EURRUB = USDRUB / USDEUR
+var CONVERT = map[string]map[string]float64{
+	"EUR": {
+		"USD": 1.1719,
+		"RUB": 91.6579,
+	},
+	"USD": {
+		"EUR": 0.8533,
+		"RUB": 78.2117,
+	},
+	"RUB": {
+		"USD": 0.0128,
+		"EUR": 0.0109,
+	},
+}
 
 func main() {
 	fmt.Println("Калькулятор валют")
@@ -64,24 +75,8 @@ func getUserInput() (float64, string, string) {
 }
 
 func converter(currencyAmount float64, fromCurrency string, toCurrency string) float64 {
-	var result float64
 
-	switch {
-	case fromCurrency == "USD" && toCurrency == "EUR":
-		result = currencyAmount * USDEUR
-	case fromCurrency == "EUR" && toCurrency == "USD":
-		result = currencyAmount / USDEUR
-	case fromCurrency == "RUB" && toCurrency == "USD":
-		result = currencyAmount / USDRUB
-	case fromCurrency == "RUB" && toCurrency == "EUR":
-		result = currencyAmount / EURRUB
-	case fromCurrency == "USD" && toCurrency == "RUB":
-		result = currencyAmount * USDRUB
-	case fromCurrency == "EUR" && toCurrency == "RUB":
-		result = currencyAmount * EURRUB
-	default:
-		result = currencyAmount
-	}
+	result := currencyAmount * CONVERT[fromCurrency][toCurrency]
 
 	return result
 }
@@ -93,7 +88,7 @@ func checkCurrencyInput() (string, error) {
 	if currency == "USD" || currency == "EUR" || currency == "RUB" {
 		return currency, nil
 	}
-	return "", errors.New("Неверный ввод, попробуйте USD, EUR, RUB")
+	return "", errors.New("неверный ввод, попробуйте USD, EUR, RUB")
 }
 
 func checkCurrencyAmmountInput() (float64, error) {
@@ -102,7 +97,7 @@ func checkCurrencyAmmountInput() (float64, error) {
 	if ammount > 0 {
 		return ammount, nil
 	}
-	return 0, errors.New("Количество денег не может быть отрицательным или строкой")
+	return 0, errors.New("количество денег не может быть отрицательным или строкой")
 }
 
 func checkRepeatCalculation() bool {
@@ -110,10 +105,8 @@ func checkRepeatCalculation() bool {
 
 	fmt.Println("Хотите провести еще один рассчет (Y/N)")
 	fmt.Scan(&answer)
-	if strings.ToUpper(answer) == "Y" {
-		return true
-	}
-	return false
+
+	return strings.ToUpper(answer) == "Y"
 }
 
 func outputResult(r float64) {
