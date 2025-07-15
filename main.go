@@ -6,27 +6,26 @@ import (
 	"strings"
 )
 
-var CONVERT = map[string]map[string]float64{
-	"EUR": {
-		"USD": 1.1719,
-		"RUB": 91.6579,
-		"EUR": 1,
-	},
-	"USD": {
-		"EUR": 0.8533,
-		"RUB": 78.2117,
-		"USD": 1,
-	},
-	"RUB": {
-		"USD": 0.0128,
-		"EUR": 0.0109,
-		"RUB": 1,
-	},
-}
-
 func main() {
 	fmt.Println("Калькулятор валют")
 
+	var exchangeRates = map[string]map[string]float64{
+		"EUR": {
+			"USD": 1.1719,
+			"RUB": 91.6579,
+			"EUR": 1,
+		},
+		"USD": {
+			"EUR": 0.8533,
+			"RUB": 78.2117,
+			"USD": 1,
+		},
+		"RUB": {
+			"USD": 0.0128,
+			"EUR": 0.0109,
+			"RUB": 1,
+		},
+	}
 	var currencyAmount float64
 	var fromCurrency string
 	var toCurrency string
@@ -36,7 +35,7 @@ func main() {
 	for {
 
 		currencyAmount, fromCurrency, toCurrency = getUserInput()
-		result = converter(currencyAmount, fromCurrency, toCurrency)
+		result = converter(&exchangeRates, currencyAmount, fromCurrency, toCurrency)
 		outputResult(result)
 
 		isRepeatCalculation := checkRepeatCalculation()
@@ -77,11 +76,9 @@ func getUserInput() (float64, string, string) {
 	return currencyAmount, fromCurrency, toCurrency
 }
 
-func converter(currencyAmount float64, fromCurrency string, toCurrency string) float64 {
-
-	result := currencyAmount * CONVERT[fromCurrency][toCurrency]
-
-	return result
+func converter(exchangeRates *map[string]map[string]float64, currencyAmount float64, fromCurrency string, toCurrency string) float64 {
+	rate := (*exchangeRates)[fromCurrency][toCurrency]
+	return currencyAmount * rate
 }
 
 func checkCurrencyInput() (string, error) {
