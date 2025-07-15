@@ -10,14 +10,17 @@ var CONVERT = map[string]map[string]float64{
 	"EUR": {
 		"USD": 1.1719,
 		"RUB": 91.6579,
+		"EUR": 1,
 	},
 	"USD": {
 		"EUR": 0.8533,
 		"RUB": 78.2117,
+		"USD": 1,
 	},
 	"RUB": {
 		"USD": 0.0128,
 		"EUR": 0.0109,
+		"RUB": 1,
 	},
 }
 
